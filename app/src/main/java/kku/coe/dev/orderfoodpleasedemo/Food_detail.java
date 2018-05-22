@@ -5,11 +5,16 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cepheuen.elegantnumberbutton.view.ElegantNumberButton;
+import kku.coe.dev.orderfoodpleasedemo.Database.Database;
+import kku.coe.dev.orderfoodpleasedemo.Model.Food;
+import kku.coe.dev.orderfoodpleasedemo.Model.Order;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -17,7 +22,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
-public class food_detail extends AppCompatActivity {
+public class Food_detail extends AppCompatActivity {
 
     TextView food_name, food_price, food_description;
     ImageView img_food;
@@ -30,6 +35,7 @@ public class food_detail extends AppCompatActivity {
 
     FirebaseDatabase database;
     DatabaseReference foods;
+    Food currentFood;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +47,20 @@ public class food_detail extends AppCompatActivity {
 
         number_button = (ElegantNumberButton) findViewById(R.id.number_button);
         btnCart = (FloatingActionButton) findViewById(R.id.btcCart);
+        btnCart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new Database(getBaseContext()).addToCart(new Order(
+                        foodId,
+                        currentFood.getName(),
+                        number_button.getNumber(),
+                        currentFood.getPrice(),
+                        currentFood.getDiscount()
+                ));
+            }
+        });
+
+
 
         food_name = (TextView) findViewById(R.id.food_name);
         food_price = (TextView) findViewById(R.id.food_price);
@@ -52,30 +72,34 @@ public class food_detail extends AppCompatActivity {
         collapsingToolbarLayout.setExpandedTitleTextAppearance(R.style.ExpendedAppbar);
 
 
+
+
         //Get Food Id from Intent
         if (getIntent() != null)
             foodId = getIntent().getStringExtra("FoodId");
         if (!foodId.isEmpty()) {
-           // getDetailFood(foodId);
+            getDetailFood(foodId);
         }
 
 
     }
-    /*
+
     private void getDetailFood(String foodId) {
         foods.child(foodId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Food food = dataSnapshot.getValue(Food.class);
+                currentFood = dataSnapshot.getValue(Food.class);
 
-                Picasso.with(getBaseContext()).load(food.getImage());
-                    .into(img_food);
+                Picasso.with(getBaseContext()).load(currentFood.getImage())
+                        .into(img_food);
 
+                collapsingToolbarLayout.setTitle(currentFood.getName());
 
-                collapsingToolbarLayout.setTitle(food.getName);
-                food_name.setText(food.getName());
-                food_price.setText(food.getPrice());
-                food_description.setText(food.getDescription());
+                food_name.setText(currentFood.getName());
+
+                food_price.setText(currentFood.getPrice());
+
+                food_description.setText(currentFood.getDescription());
             }
 
             @Override
@@ -84,8 +108,10 @@ public class food_detail extends AppCompatActivity {
             }
         });
 
-    } */
+    }
 }
+
+
 
 
 

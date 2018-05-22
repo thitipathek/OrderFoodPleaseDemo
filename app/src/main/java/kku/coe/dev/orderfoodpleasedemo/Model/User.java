@@ -4,7 +4,7 @@ public class User {
 
     private String Name;
     private String Password;
-    private String Email;
+    private String phone;
 
     public User() {
 
@@ -15,18 +15,12 @@ public class User {
         Password = password;
     }
 
-    //public User(String name, String password, String email) {
-      //  Name = name;
-        //Password = password;
-       // Email = email;
-    //}
 
-    public String getEmail() {
-        return Email;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setEmail(String email) {
-        Email = email;
+    public void setPhone(String phone) { this.phone = phone;
     }
 
     public String getName() {
